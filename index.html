@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos Generales */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #FFF5F2;
+            color: #333;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* Logo */
+        .logo-container {
+            margin-bottom: 0px;
+        }
+        .logo-container img {
+            max-width: 300px; /* Ajusta según tu logo */
+            height: auto;
+        }
+
+        /* Contenedor Principal */
+        .container {
+            max-width: 550px;
+            width: 100%;
+            background-color: #FFFADC;
+            padding: 50px 40px;
+            border-radius: 2px; /* Bordes rectos para un look más premium */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .description {
+            font-size: 0.9rem;
+            line-height: 1.8;
+            color: #777;
+            margin-bottom: 35px;
+            font-weight: 300;
+        }
+
+        /* Formulario */
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+            transition: border 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: #d4a373; /* Tono dorado suave */
+        }
+
+        button {
+            margin-top: 25px;
+            background-color: #F4D7D3;
+            color: #fff;
+            padding: 15px 50px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #444;
+            letter-spacing: 3px;
+        }
+
+        /* Mensaje de Éxito */
+        #mensaje-exito {
+            display: none;
+            margin-top: 20px;
+            padding: 30px;
+            border: 1px solid #d4a373;
+            background-color: #fffcf9;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .codigo-box {
+            font-size: 1.8rem;
+            color: #d4a373;
+            font-family: 'Playfair Display', serif;
+            margin: 20px 0;
+            font-weight: bold;
+            letter-spacing: 5px;
+        }
+
+        .instruccion-captura {
+            font-size: 0.75rem;
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <img src="imagenes/logo koko.png" alt="Logo Joyería">
+    </div>
+
+    <div class="container">
+        <div id="form-content">
+            <h1>Valentine's Day</h1>
+            <p class="description">
+                El amor está en todos lados. Cuéntanos tu historia de amor con tu persona especial. 
+                Recuerda que una persona especial no solo puede ser tu pareja, sino también alguna increíble amistad.
+            </p>
+
+            <form id="storyForm" action="https://formspree.io/f/xeeewgwd" method="POST">
+                <textarea name="Historia" id="historia" placeholder="Escribe aquí tu historia..." required></textarea>
+                
+                <input type="hidden" name="Codigo_Descuento" id="input-codigo">
+                
+                <button type="submit" id="btn-enviar">Enviar</button>
+            </form>
+        </div>
+
+        <div id="mensaje-exito">
+            <h2 style="font-family: 'Playfair Display';">¡Gracias por compartir!</h2>
+            <p style="font-size: 0.9rem;">Tu historia nos ha conmovido. Como regalo, aquí tienes tu beneficio:</p>
+            
+            <div class="codigo-box" id="codigo-display">------</div>
+            
+            <p><strong>10% DE DESCUENTO</strong></p>
+            <p class="instruccion-captura">Toma una captura de pantalla y envíala al realizar tu pedido para validarlo.</p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('storyForm');
+        const formContent = document.getElementById('form-content');
+        const mensajeExito = document.getElementById('mensaje-exito');
+        const codigoDisplay = document.getElementById('codigo-display');
+        const inputCodigo = document.getElementById('input-codigo');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita que la página se recargue
+
+            // 1. Generar código aleatorio de 6 dígitos (letras y números)
+            const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excluimos O, 0, I, 1 para evitar confusiones
+            let codigoGenerado = '';
+            for (let i = 0; i < 6; i++) {
+                codigoGenerado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+            }
+
+            // 2. Asignar el código al campo oculto y al texto visual
+            inputCodigo.value = codigoGenerado;
+            codigoDisplay.innerText = codigoGenerado;
+
+            // 3. Enviar datos a Formspree usando AJAX para que no cambie de página
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                // 4. Mostrar mensaje de éxito y ocultar formulario
+                formContent.style.display = 'none';
+                mensajeExito.style.display = 'block';
+            }).catch(error => {
+                alert("Hubo un error al enviar. Inténtalo de nuevo.");
+            });
+        });
+    </script>
+
+</body>
+</html>
